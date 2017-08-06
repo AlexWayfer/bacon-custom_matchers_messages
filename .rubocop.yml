@@ -1,0 +1,6 @@
+Style/Tab:
+  Enabled: false
+Style/IndentationWidth:
+  Width: 1
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
