@@ -30,39 +30,39 @@ require 'bacon/custom_matchers_messages'
 ## Old style, without message:
 
 def shorter_than(max_size)
-	->(obj) { obj.size < max_size }
+  ->(obj) { obj.size < max_size }
 end
 
 ## Old style, with error message:
 
 def shorter_than(max_size)
-	lambda do |obj|
-		obj.size < max_size ||
-			"#{obj.inspect} doesn't shorter than #{max_size}"
-	end
+  lambda do |obj|
+    obj.size < max_size ||
+      "#{obj.inspect} doesn't shorter than #{max_size}"
+  end
 end
 
 ## New style, with generated error message:
 
 custom_matcher :shorter_than do |obj, max_size|
-	obj.size < max_size
+  obj.size < max_size
 end
 
 ## Old style, with custom arguments in message:
 
 def include_words(*words)
-	lambda do |obj|
-		words.all? { |word| obj.split.include? word } ||
-			"#{obj.inspect} doesn't include words" \
-			" #{(words - obj.split).map!(&:inspect).join(',')}"
-	end
+  lambda do |obj|
+    words.all? { |word| obj.split.include? word } ||
+      "#{obj.inspect} doesn't include words" \
+      " #{(words - obj.split).map!(&:inspect).join(',')}"
+  end
 end
 
 ## New style, with custom arguments for generated error message:
 
 custom_matcher :include_words do |obj, *words|
-	words.all? { |word| obj.split.include? word } ||
-		(words - obj.split)
+  words.all? { |word| obj.split.include? word } ||
+    (words - obj.split)
 end
 ```
 
