@@ -1,6 +1,10 @@
-Style/Tab:
+Layout/Tab:
   Enabled: false
-Style/IndentationWidth:
+Layout/IndentationWidth:
   Width: 1
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented
+
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*_spec.rb'

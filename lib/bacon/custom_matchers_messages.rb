@@ -29,4 +29,40 @@ module Bacon
 			end
 		)
 	end
+
+	CustomMatchers = Hash.new do |_hash, key|
+		raise NameError, "no such custom matcher: #{key.inspect}"
+	end
+
+	## Class for generating Array
+	## with Proc for checking and Proc for error message
+	class CustomMatcher
+		def initialize(name, &block)
+			@description = name.to_s.tr('_', ' ')
+			@block = block
+		end
+
+		def to_a(args, &_message_args)
+			[
+				->(obj) { @block.call(obj, *args) },
+				lambda do |obj|
+					"#{obj.inspect} doesn't #{@description}" \
+					" #{yield(obj, *args).map(&:inspect).join(', ')}"
+				end
+			]
+		end
+	end
+end
+
+## Add private method into Kernel for custom matchers
+module Kernel
+	private
+
+	def custom_matcher(name, message_args: ->(_obj, *args) { args }, &block)
+		Bacon::CustomMatchers[name] = Bacon::CustomMatcher.new(name, &block)
+		define_method name do |*args|
+			# binding.pry
+			Bacon::CustomMatchers[name].to_a(args, &message_args)
+		end
+	end
 end
