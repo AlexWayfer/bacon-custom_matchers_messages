@@ -3,55 +3,63 @@ describe Bacon::CustomMatchersMessages do
 
 	describe 'regular methods' do
 		describe 'with one argument' do
-			it 'allows use custom matchers as regular without fail' do
-				-> { string.should.be shorter_than(20) }
-					.should.not.raise
+			describe 'as regular' do
+				it 'allows use custom matchers as regular without fail' do
+					-> { string.should.be shorter_than(20) }
+						.should.not.raise
+				end
+
+				it 'allows use custom matchers as regular with fail' do
+					-> { string.should.be shorter_than(2) }
+						.should.raise(Bacon::Error)
+						.message.should.be.empty
+				end
 			end
 
-			it 'allows use custom matchers as regular with fail' do
-				-> { string.should.be shorter_than(2) }
-					.should.raise(Bacon::Error)
-					.message.should.be.empty
-			end
+			describe 'with custom error message after `||` in block' do
+				it 'allows use custom matchers without fail' do
+					-> { string.should.be shorter_than_with_message(20) }
+						.should.not.raise
+				end
 
-			it 'allows use custom matchers with custom error messages without fail' do
-				-> { string.should.be shorter_than_with_message(20) }
-					.should.not.raise
-			end
-
-			it 'allows use custom matchers with custom error messages with fail' do
-				-> { string.should.be shorter_than_with_message(2) }
-					.should.raise(Bacon::Error)
-					.message.should.equal '"foo bar baz" doesn\'t shorter than 2'
+				it 'allows use custom matchers with fail' do
+					-> { string.should.be shorter_than_with_message(2) }
+						.should.raise(Bacon::Error)
+						.message.should.equal '"foo bar baz" doesn\'t shorter than 2'
+				end
 			end
 		end
 
 		describe 'with rest argument' do
-			it 'allows use custom matchers as regular without fail' do
-				-> { string.should include_words('foo', 'bar') }
-					.should.not.raise
-			end
-
-			it 'allows use custom matchers as regular with fail' do
-				-> { string.should include_words('foo', 'hello') }
-					.should.raise(Bacon::Error)
-					.message.should.be.empty
-			end
-
-			it 'allows use custom matchers with custom error messages without fail' do
-				block = lambda do
-					string.should.be include_words_with_message_improved('foo', 'bar')
+			describe 'as regular' do
+				it 'allows use custom matchers as regular without fail' do
+					-> { string.should include_words('foo', 'bar') }
+						.should.not.raise
 				end
-				block.should.not.raise
+
+				it 'allows use custom matchers as regular with fail' do
+					-> { string.should include_words('foo', 'hello') }
+						.should.raise(Bacon::Error)
+						.message.should.be.empty
+				end
 			end
 
-			it 'allows use custom matchers with custom error messages with fail' do
-				block = lambda do
-					string.should.be include_words_with_message_improved('foo', 'hello')
+			describe 'with custom error message after `||` in block' do
+				it 'allows use custom matchers without fail' do
+					block = lambda do
+						string.should include_words_with_message_improved('foo', 'bar')
+					end
+					block.should.not.raise
 				end
-				block
-					.should.raise(Bacon::Error)
-					.message.should.equal '"foo bar baz" doesn\'t include words "hello"'
+
+				it 'allows use custom matchers with fail' do
+					block = lambda do
+						string.should include_words_with_message_improved('foo', 'hello')
+					end
+					block
+						.should.raise(Bacon::Error)
+						.message.should.equal '"foo bar baz" doesn\'t include words "hello"'
+				end
 			end
 		end
 	end
@@ -86,14 +94,17 @@ describe Bacon::CustomMatchersMessages do
 					)
 			end
 
-			describe 'with message arguments' do
+			describe 'with message arguments after `||` in block' do
 				it 'allows use custom matchers with custom arguments without fail' do
 					-> { string.should include_words_generated_improved('foo', 'bar') }
 						.should.not.raise
 				end
 
 				it 'allows use custom matchers with custom arguments with fail' do
-					-> { string.should include_words_generated_improved('foo', 'hello') }
+					block = lambda do
+						string.should include_words_generated_improved('foo', 'hello')
+					end
+					block
 						.should.raise(Bacon::Error)
 						.message.should.equal(
 							'"foo bar baz" doesn\'t include words generated improved "hello"'

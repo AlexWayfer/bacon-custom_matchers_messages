@@ -5,33 +5,16 @@ module Bacon
 	module CustomMatchersMessages
 		::Should.prepend(
 			Module.new do
-				## Why so ugly:
-				## For regular custom matchers support
-				##     .should custom_matcher(args)
-				## instead of
-				##     .should(*custom_matcher(args))
-				def be(*args, &block)
-					if args.is_a?(Array) &&
-					   args.size == 1 &&
-					   args.first.is_a?(Array) &&
-					   args.first.size == 2 &&
-					   args.first.all? { |arg| arg.is_a? Proc }
-						args.flatten!
-					end
-					super
-				end
-
 				def satisfy(description = '', &block)
-					## Render received description if it's a Proc
-					description = description.call(@object) if description.is_a?(Proc)
-					super
+					r = yield(@object)
+					if r.is_a? String
+						description = r
+						block = ->(_obj) { false }
+					end
+					super(description, &block)
 				end
 			end
 		)
-	end
-
-	CustomMatchers = Hash.new do |_hash, key|
-		raise NameError, "no such custom matcher: #{key.inspect}"
 	end
 
 	## Class for generating Array
@@ -42,14 +25,13 @@ module Bacon
 			@block = block
 		end
 
-		def to_a(args, &_message_args)
-			[
-				->(obj) { @block.call(obj, *args) },
-				lambda do |obj|
-					"#{obj.inspect} doesn't #{@description}" \
-					" #{yield(obj, *args).map(&:inspect).join(', ')}"
-				end
-			]
+		def to_proc_with_message(*args)
+			lambda do |obj|
+				result = @block.call(obj, *args)
+				return result if result == true
+				"#{obj.inspect} doesn't #{@description}" \
+					" #{(result || args).map(&:inspect).join(', ')}"
+			end
 		end
 	end
 end
@@ -58,11 +40,10 @@ end
 module Kernel
 	private
 
-	def custom_matcher(name, message_args: ->(_obj, *args) { args }, &block)
-		Bacon::CustomMatchers[name] = Bacon::CustomMatcher.new(name, &block)
+	def custom_matcher(name, &block)
+		custom_matcher = Bacon::CustomMatcher.new(name, &block)
 		define_method name do |*args|
-			# binding.pry
-			Bacon::CustomMatchers[name].to_a(args, &message_args)
+			custom_matcher.to_proc_with_message(*args)
 		end
 	end
 end
