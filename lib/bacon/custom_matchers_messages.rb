@@ -16,34 +16,21 @@ module Bacon
 			end
 		)
 	end
-
-	## Class for generating Array
-	## with Proc for checking and Proc for error message
-	class CustomMatcher
-		def initialize(name, &block)
-			@description = name.to_s.tr('_', ' ')
-			@block = block
-		end
-
-		def to_proc_with_message(*args)
-			lambda do |obj|
-				result = @block.call(obj, *args)
-				return result if result == true
-				"#{obj.inspect} doesn't #{@description}" \
-					" #{(result || args).map(&:inspect).join(', ')}"
-			end
-		end
-	end
 end
 
 ## Add private method into Kernel for custom matchers
 module Kernel
 	private
 
-	def custom_matcher(name, &block)
-		custom_matcher = Bacon::CustomMatcher.new(name, &block)
+	def custom_matcher(name, &_block)
+		description = name.to_s.tr('_', ' ')
 		define_method name do |*args|
-			custom_matcher.to_proc_with_message(*args)
+			lambda do |obj|
+				result = yield(obj, *args)
+				return result if result == true
+				"#{obj.inspect} doesn't #{description}" \
+					" #{(result || args).map(&:inspect).join(', ')}"
+			end
 		end
 	end
 end
