@@ -33,6 +33,9 @@ def shorter_than(max_size)
   ->(obj) { obj.size < max_size }
 end
 
+# Bacon::Error:
+
+
 ## Old style, with error message:
 
 def shorter_than(max_size)
@@ -42,11 +45,17 @@ def shorter_than(max_size)
   end
 end
 
+# Bacon::Error: "foo bar baz" doesn't shorter than 2
+
+
 ## New style, with generated error message:
 
 custom_matcher :shorter_than do |obj, max_size|
   obj.size < max_size
 end
+
+# Bacon::Error: "foo bar baz" doesn't shorter than 2
+
 
 ## Old style, with custom arguments in message:
 
@@ -58,12 +67,17 @@ def include_words(*words)
   end
 end
 
+# Bacon::Error: "foo bar baz" doesn't include words "hello"
+
+
 ## New style, with custom arguments for generated error message:
 
 custom_matcher :include_words do |obj, *words|
   words.all? { |word| obj.split.include? word } ||
     (words - obj.split)
 end
+
+# Bacon::Error: "foo bar baz" doesn't include words "hello"
 ```
 
 ## Development
