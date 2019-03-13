@@ -17,7 +17,6 @@ Gem::Specification.new do |spec|
 	end
 	spec.require_paths = ['lib']
 
-	spec.add_development_dependency 'bundler', '~> 1.15'
 	spec.add_development_dependency 'rake', '~> 12'
 	spec.add_development_dependency 'bacon', '~> 1.2'
 	spec.add_development_dependency 'bacon-colored_output', '~> 1.1'
