@@ -17,7 +17,7 @@ Gem::Specification.new do |spec|
 	end
 	spec.require_paths = ['lib']
 
-	spec.add_development_dependency 'rake', '~> 12'
+	spec.add_development_dependency 'rake', '~> 12.3'
 	spec.add_development_dependency 'bacon', '~> 1.2'
 	spec.add_development_dependency 'bacon-colored_output', '~> 1.1'
 	spec.add_development_dependency 'pry-byebug', '~> 3.4'
