@@ -28,6 +28,7 @@ module Kernel
 			lambda do |obj|
 				result = yield(obj, *args)
 				return result if result == true
+
 				"#{obj.inspect} doesn't #{description}" \
 					" #{(result || args).map(&:inspect).join(', ')}"
 			end
