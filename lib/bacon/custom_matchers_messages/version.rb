@@ -1,5 +1,5 @@
 module Bacon
 	module CustomMatchersMessages
-		VERSION = '0.0.0'.freeze
+		VERSION = '0.1.0'.freeze
 	end
 end
