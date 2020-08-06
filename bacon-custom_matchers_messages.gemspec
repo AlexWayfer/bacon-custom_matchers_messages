@@ -21,5 +21,5 @@ Gem::Specification.new do |spec|
 	spec.add_development_dependency 'bacon-colored_output', '~> 1.1'
 	spec.add_development_dependency 'pry-byebug', '~> 3.4'
 	spec.add_development_dependency 'rake', '~> 12.3'
-	spec.add_development_dependency 'rubocop', '~> 0.65.0'
+	spec.add_development_dependency 'rubocop', '~> 0.89.0'
 end
